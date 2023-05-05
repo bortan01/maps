@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mapas/blocs/gps/gps_bloc.dart';
 
 import 'screens/gps_access_screen.dart';
-import 'screens/loading_screen.dart';
 
 void main() => runApp(const MyApp());
 
@@ -10,9 +11,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Material App',
-      home: GpsAccesScreen(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => GpsBloc()),
+      ],
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Material App',
+        home: GpsAccesScreen(),
+      ),
     );
   }
 }
