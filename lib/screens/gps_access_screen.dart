@@ -11,7 +11,7 @@ class GpsAccesScreen extends StatelessWidget {
     return Scaffold(
       body: BlocBuilder<GpsBloc, GpsState>(
         builder: (context, state) {
-          return state.isGpsEnable ?   const AccesButton(): const EnableGpsMessage();
+          return state.isGpsEnable ? const AccesButton() : const EnableGpsMessage();
         },
       ),
     );
@@ -56,7 +56,10 @@ class AccesButton extends StatelessWidget {
               "Solicia Acceso",
               style: TextStyle(color: Colors.white),
             ),
-            onPressed: () {},
+            onPressed: () async {
+              final bloc = BlocProvider.of<GpsBloc>(context, listen: false);
+              await bloc.askGpsAccess();
+            },
           )
         ],
       ),
