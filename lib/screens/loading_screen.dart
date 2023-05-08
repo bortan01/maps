@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mapas/screens/gps_access_screen.dart';
+import 'package:mapas/screens/map_screen.dart';
+
+import '../blocs/gps/gps_bloc.dart';
 
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({super.key});
@@ -6,12 +11,10 @@ class LoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Loading'),
-      ),
-      body: const Center(
-        child: Text('Loading'),
+      body: BlocBuilder<GpsBloc, GpsState>(
+        builder: (context, GpsState state) {
+          return state.isAllGranted ? const MapScreen() : const GpsAccesScreen();
+        },
       ),
     );
   }
