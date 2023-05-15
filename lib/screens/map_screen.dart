@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../blocs/location/location_bloc.dart';
 
@@ -31,8 +32,17 @@ class _MapScreenState extends State<MapScreen> {
       appBar: AppBar(
         title: const Text('Map'),
       ),
-      body: const Center(
-        child: Text('Map'),
+      body: BlocBuilder<LocationBloc, LocationState>(
+        builder: (context, state) {
+          if (state.lastKnowLocation == null) {
+            return const Center(child: Text("Espere por favor"));
+          }
+          final CameraPosition initialCamaraPosition = CameraPosition(
+            target: state.lastKnowLocation!,
+            zoom: 15,
+          );
+          return  GoogleMap(initialCameraPosition: initialCamaraPosition);
+        },
       ),
     );
   }
