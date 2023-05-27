@@ -29,6 +29,7 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bloc = BlocProvider.of<LocationBloc>(context);
     return Scaffold(
       body: SafeArea(
         child: BlocBuilder<LocationBloc, LocationState>(

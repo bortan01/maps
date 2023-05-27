@@ -5,15 +5,24 @@ import 'package:equatable/equatable.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../themes/mapa_style.dart';
+import '../location/location_bloc.dart';
 
 part 'map_event.dart';
 part 'map_state.dart';
 
 class MapBloc extends Bloc<MapEvent, MapState> {
   GoogleMapController? _mapController;
+  final LocationBloc locationBloc;
 
-  MapBloc() : super(const MapState()) {
+  MapBloc({
+    required this.locationBloc,
+  }) : super(const MapState()) {
     on<OnMapInitializeEvent>(_onMapInicialize);
+    locationBloc.stream.listen((locationState) {
+      if (!state.isFollowingUser) return;
+      if (locationState.lastKnowLocation == null) return;
+      moveCamera(locationState.lastKnowLocation!);
+    });
   }
 
   void _onMapInicialize(OnMapInitializeEvent event, Emitter<MapState> emit) {
