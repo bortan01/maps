@@ -30,9 +30,6 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Map'),
-      ),
       body: SafeArea(
         child: BlocBuilder<LocationBloc, LocationState>(
           builder: (context, state) {
