@@ -18,6 +18,12 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     required this.locationBloc,
   }) : super(const MapState()) {
     on<OnMapInitializeEvent>(_onMapInicialize);
+    on<OnStarFollowingUser>(_onStart);
+    on<OnStopFollowingUser>(_onStop);
+
+    init();
+  }
+  void init() {
     locationBloc.stream.listen((locationState) {
       if (!state.isFollowingUser) return;
       if (locationState.lastKnowLocation == null) return;
@@ -34,5 +40,15 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   void moveCamera(LatLng newLocation) {
     final camaraUpdate = CameraUpdate.newLatLng(newLocation);
     _mapController?.animateCamera(camaraUpdate);
+  }
+
+  void _onStart(OnStarFollowingUser event, Emitter<MapState> emit) {
+    emit(state.copyWith(isFollowingUser: true));
+    if (locationBloc.state.lastKnowLocation == null) return;
+    moveCamera(locationBloc.state.lastKnowLocation!);
+  }
+
+  void _onStop(OnStopFollowingUser event, Emitter<MapState> emit) {
+    emit(state.copyWith(isFollowingUser: false));
   }
 }

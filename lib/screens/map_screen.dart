@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../blocs/location/location_bloc.dart';
+import '../blocs/map/map_bloc.dart';
 import '../views/map_view.dart';
+import '../widgets/btn_follow_user.dart';
 import '../widgets/btn_location.dart';
 
 class MapScreen extends StatefulWidget {
@@ -33,17 +35,22 @@ class _MapScreenState extends State<MapScreen> {
     return Scaffold(
       body: SafeArea(
         child: BlocBuilder<LocationBloc, LocationState>(
-          builder: (context, state) {
-            if (state.lastKnowLocation == null) {
+          builder: (context, stateLocation) {
+            if (stateLocation.lastKnowLocation == null) {
               return const Center(child: Text("Espere por favor"));
             }
 
-            return Stack(
-              children: [
-                MapView(
-                  initialLocation: state.lastKnowLocation!,
-                ),
-              ],
+            return BlocBuilder<MapBloc, MapState>(
+              builder: (contextMap, stateMap) {
+                return Stack(
+                  children: [
+                    MapView(
+                      initialLocation: stateLocation.lastKnowLocation!,
+                      polyline: stateMap.polylines.values.toSet(),
+                    ),
+                  ],
+                );
+              },
             );
           },
         ),
@@ -52,6 +59,7 @@ class _MapScreenState extends State<MapScreen> {
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: const [
+          BtnFollowUser(),
           BtnCurrentLocation(),
         ],
       ),

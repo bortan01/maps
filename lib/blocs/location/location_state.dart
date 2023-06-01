@@ -4,6 +4,7 @@ part of 'location_bloc.dart';
   final bool followingUser;
   final LatLng? lastKnowLocation;
   final List<LatLng> myLocationHistory;
+  
   const LocationState({
     this.followingUser = false,
     this.lastKnowLocation,
