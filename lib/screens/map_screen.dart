@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:mapas/widgets/btn_toggle_user_route.dart';
 
 import '../blocs/location/location_bloc.dart';
 import '../blocs/map/map_bloc.dart';
@@ -42,11 +44,16 @@ class _MapScreenState extends State<MapScreen> {
 
             return BlocBuilder<MapBloc, MapState>(
               builder: (contextMap, stateMap) {
+                Map<String, Polyline> polylines = Map.from(stateMap.polylines);
+                if (!stateMap.showMyRoute) {
+                  polylines.removeWhere((key, value) => key == 'myRoute');
+                }
+
                 return Stack(
                   children: [
                     MapView(
                       initialLocation: stateLocation.lastKnowLocation!,
-                      polyline: stateMap.polylines.values.toSet(),
+                      polyline: polylines.values.toSet(),
                     ),
                   ],
                 );
@@ -59,6 +66,7 @@ class _MapScreenState extends State<MapScreen> {
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: const [
+          BtnTogleUserRoute(),
           BtnFollowUser(),
           BtnCurrentLocation(),
         ],
@@ -66,23 +74,3 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 }
-
-
-
-// /Users/boris/.rvm/gems/ruby-3.1.3/bin:
-// /Users/boris/.rvm/gems/ruby-3.1.3@global/bin:
-// /Users/boris/.rvm/rubies/ruby-3.1.3/bin:
-// /Users/boris/fvm/default/bin:
-// /opt/homebrew/bin:
-// /usr/local/bin:
-// /usr/local/bin:
-// /System/Cryptexes/App/usr/bin:
-// /usr/bin:
-// /bin:
-// /usr/sbin:
-// /sbin:
-// /Library/Apple/usr/bin:
-// /var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:
-// /var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:
-// /var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:
-// /Users/boris/.rvm/bin
