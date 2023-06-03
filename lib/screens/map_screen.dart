@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:mapas/widgets/btn_toggle_user_route.dart';
 
 import '../blocs/location/location_bloc.dart';
 import '../blocs/map/map_bloc.dart';
 import '../views/map_view.dart';
 import '../widgets/btn_follow_user.dart';
 import '../widgets/btn_location.dart';
+import '../widgets/btn_toggle_user_route.dart';
+import '../widgets/manual_market.dart';
+import '../widgets/search_bar.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -55,6 +57,8 @@ class _MapScreenState extends State<MapScreen> {
                       initialLocation: stateLocation.lastKnowLocation!,
                       polyline: polylines.values.toSet(),
                     ),
+                    const SearchBar(),
+                    const ManualMarket()
                   ],
                 );
               },
