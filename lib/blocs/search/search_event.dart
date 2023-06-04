@@ -7,7 +7,8 @@ abstract class SearchEvent extends Equatable {
   List<Object> get props => [];
 }
 
-
 class OnActivateManualMarkerEvent extends SearchEvent {
-  
+  final bool isActive;
+
+  const OnActivateManualMarkerEvent({required this.isActive});
 }

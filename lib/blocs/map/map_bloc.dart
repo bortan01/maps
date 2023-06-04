@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:mapas/models/route_destination.dart';
 
 import '../../themes/mapa_style.dart';
 import '../location/location_bloc.dart';
@@ -15,6 +16,8 @@ part 'map_state.dart';
 class MapBloc extends Bloc<MapEvent, MapState> {
   GoogleMapController? _mapController;
   final LocationBloc locationBloc;
+  LatLng? mapCenter;
+
   StreamSubscription<LocationState>? _locationStateSubscription;
   MapBloc({
     required this.locationBloc,
@@ -24,6 +27,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     on<OnStopFollowingUser>(_onStop);
     on<UpdateUserPolylineEvent>(_onUpdate);
     on<OnTogleUserRoute>(_onTogle);
+    on<DisplayPoliyneEvent>(_onDisplayPolilyne);
 
     init();
   }
@@ -76,6 +80,25 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
   void _onTogle(OnTogleUserRoute event, Emitter<MapState> emit) {
     emit(state.copyWith(showMyRoute: !state.showMyRoute));
+  }
+
+  void _onDisplayPolilyne(DisplayPoliyneEvent event, Emitter<MapState> emit) {
+    emit(state.copyWith(polylines: event.polilynes));
+  }
+
+  Future<void> drawRoutePolilyne(RouteDestination destination) async {
+    final myRoute = Polyline(
+      polylineId: const PolylineId('route'),
+      color: Colors.purple,
+      width: 5,
+      startCap: Cap.roundCap,
+      endCap: Cap.roundCap,
+      points: destination.points,
+    );
+    final currentPolilyne = Map<String, Polyline>.from(state.polylines);
+    currentPolilyne['route'] = myRoute;
+
+    add(DisplayPoliyneEvent(polilynes: currentPolilyne));
   }
 
   @override

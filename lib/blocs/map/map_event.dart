@@ -24,3 +24,10 @@ class UpdateUserPolylineEvent extends MapEvent {
 }
 
 class OnTogleUserRoute extends MapEvent {}
+
+class DisplayPoliyneEvent extends MapEvent {
+  final Map<String, Polyline> polilynes;
+  const DisplayPoliyneEvent({
+    required this.polilynes,
+  });
+}

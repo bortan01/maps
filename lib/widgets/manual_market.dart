@@ -1,11 +1,36 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mapas/blocs/location/location_bloc.dart';
+import 'package:mapas/blocs/map/map_bloc.dart';
+import 'package:mapas/helpers/show_loadin_messsages.dart';
+
+import '../blocs/search/search_bloc.dart';
 
 class ManualMarket extends StatelessWidget {
   const ManualMarket({super.key});
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<SearchBloc, SearchState>(
+      builder: (context, state) {
+        if (state.displayManualMarker) {
+          return const _ManualMarketBody();
+        }
+        return const SizedBox();
+      },
+    );
+  }
+}
+
+class _ManualMarketBody extends StatelessWidget {
+  const _ManualMarketBody();
+
+  @override
+  Widget build(BuildContext context) {
+    final blocSearc = BlocProvider.of<SearchBloc>(context);
+    final blocLocation = BlocProvider.of<LocationBloc>(context);
+    final blocMap = BlocProvider.of<MapBloc>(context);
     final size = MediaQuery.of(context).size;
     return SizedBox(
       height: size.height,
@@ -41,13 +66,26 @@ class ManualMarket extends StatelessWidget {
                 height: 50,
                 shape: const StadiumBorder(),
                 child: const Text(
-                  'Confirmar Estilo',
+                  'Confirmar Destino',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  final navigator = Navigator.of(context);
+                  final start = blocLocation.state.lastKnowLocation;
+                  if (start == null) return;
+                  final end = blocMap.mapCenter;
+                  if (end == null) return;
+                  await showLoadingMessage(context);
+
+                  final destination = await blocSearc.getCoorsStartToEnd(start, end);
+                  await blocMap.drawRoutePolilyne(destination);
+                  blocSearc.add(const OnActivateManualMarkerEvent(isActive: false));
+
+                  navigator.pop();
+                },
               ),
             ),
           )
@@ -64,13 +102,16 @@ class _BtnBack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<SearchBloc>(context);
     return FadeInLeft(
       duration: const Duration(milliseconds: 200),
       child: CircleAvatar(
         maxRadius: 25,
         backgroundColor: Colors.black,
         child: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            bloc.add(const OnActivateManualMarkerEvent(isActive: false));
+          },
           icon: Icon(
             Icons.adaptive.arrow_back,
             color: Colors.white,
