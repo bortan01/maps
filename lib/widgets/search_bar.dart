@@ -10,10 +10,12 @@ class SearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SearchBloc, SearchState>(
-      builder: (context, state) {
-        return state.displayManualMarker ? const SizedBox() : const _SearchBarBody();
-      },
+    return SafeArea(
+      child: BlocBuilder<SearchBloc, SearchState>(
+        builder: (context, state) {
+          return state.displayManualMarker ? const SizedBox() : const _SearchBarBody();
+        },
+      ),
     );
   }
 }

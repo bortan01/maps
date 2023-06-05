@@ -10,7 +10,7 @@ part 'search_event.dart';
 part 'search_state.dart';
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
-  TrafictServices trafictServices = TrafictServices();
+  TraficServices trafictServices = TraficServices();
   SearchBloc() : super(const SearchState()) {
     on<SearchEvent>(_init);
     on<OnActivateManualMarkerEvent>(_onActivateManual);
@@ -34,5 +34,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       duration: response.routes.first.distance,
       distance: response.routes.first.duration,
     );
+  }
+
+  Future<void> getPlacesByQuery(LatLng proximity, String query) async {
+    final response = await trafictServices.getResultByQuery(query, proximity);
+    
   }
 }

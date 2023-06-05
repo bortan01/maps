@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mapas/blocs/location/location_bloc.dart';
+import 'package:mapas/blocs/search/search_bloc.dart';
 import 'package:mapas/models/search_result.dart';
 
 class SearchPlacesDelegate extends SearchDelegate<SearchResult> {
@@ -31,11 +34,20 @@ class SearchPlacesDelegate extends SearchDelegate<SearchResult> {
 
   @override
   Widget buildResults(BuildContext context) {
-    return IconButton(
-      onPressed: () {
-        close(context, SearchResult(cancel: true));
+    final bloc = BlocProvider.of<SearchBloc>(context);
+    final locationBloc = BlocProvider.of<LocationBloc>(context);
+
+    bloc.getPlacesByQuery(locationBloc.state.lastKnowLocation!, query);
+
+    return BlocBuilder<SearchBloc, SearchState>(
+      builder: (context, state) {
+        return IconButton(
+          onPressed: () {
+            close(context, SearchResult(cancel: true));
+          },
+          icon: Icon(Icons.adaptive.arrow_back),
+        );
       },
-      icon: Icon(Icons.adaptive.arrow_back),
     );
   }
 

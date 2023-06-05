@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -36,9 +37,10 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     bloc = BlocProvider.of<LocationBloc>(context);
-    return Scaffold(
-      body: SafeArea(
-        child: BlocBuilder<LocationBloc, LocationState>(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light.copyWith(statusBarColor: Colors.transparent.withOpacity(0.5)), //<-- SEE HERE
+      child: Scaffold(
+        body: BlocBuilder<LocationBloc, LocationState>(
           builder: (context, stateLocation) {
             if (stateLocation.lastKnowLocation == null) {
               return const Center(child: Text("Espere por favor"));
@@ -65,15 +67,15 @@ class _MapScreenState extends State<MapScreen> {
             );
           },
         ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: const [
-          BtnTogleUserRoute(),
-          BtnFollowUser(),
-          BtnCurrentLocation(),
-        ],
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: const [
+            BtnTogleUserRoute(),
+            BtnFollowUser(),
+            BtnCurrentLocation(),
+          ],
+        ),
       ),
     );
   }
