@@ -105,16 +105,18 @@ class _BtnBack extends StatelessWidget {
     final bloc = BlocProvider.of<SearchBloc>(context);
     return FadeInLeft(
       duration: const Duration(milliseconds: 200),
-      child: CircleAvatar(
-        maxRadius: 25,
-        backgroundColor: Colors.black,
-        child: IconButton(
-          onPressed: () {
-            bloc.add(const OnActivateManualMarkerEvent(isActive: false));
-          },
-          icon: Icon(
-            Icons.adaptive.arrow_back,
-            color: Colors.white,
+      child: SafeArea(
+        child: CircleAvatar(
+          maxRadius: 25,
+          backgroundColor: Colors.black,
+          child: IconButton(
+            onPressed: () {
+              bloc.add(const OnActivateManualMarkerEvent(isActive: false));
+            },
+            icon: Icon(
+              Icons.adaptive.arrow_back,
+              color: Colors.white,
+            ),
           ),
         ),
       ),

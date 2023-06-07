@@ -1,8 +1,10 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mapas/blocs/map/map_bloc.dart';
 import 'package:mapas/blocs/search/search_bloc.dart';
 
+import '../blocs/location/location_bloc.dart';
 import '../search/search_places_delegate.dart';
 
 class SearchBar extends StatelessWidget {
@@ -26,6 +28,8 @@ class _SearchBarBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = BlocProvider.of<SearchBloc>(context);
+    final blocLocation = BlocProvider.of<LocationBloc>(context);
+    final blocMap = BlocProvider.of<MapBloc>(context);
     return FadeInDown(
       duration: const Duration(milliseconds: 300),
       child: Container(
@@ -37,7 +41,20 @@ class _SearchBarBody extends StatelessWidget {
           onTap: () async {
             final result = await showSearch(context: context, delegate: SearchPlacesDelegate());
             if (result == null) return;
+            if (result.cancel) return;
+
             bloc.add(OnActivateManualMarkerEvent(isActive: result.manual));
+            if (result.position == null) return;
+            if (blocLocation.state.lastKnowLocation == null) return;
+
+            final destination = await bloc.getCoorsStartToEnd(
+              blocLocation.state.lastKnowLocation!,
+              result.position!,
+            );
+
+            await blocMap.drawRoutePolilyne(destination);
+
+            return;
           },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 13),

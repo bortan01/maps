@@ -37,25 +37,28 @@ class PlacesResponse {
 }
 
 class Feature {
-    final String id;
-    final String type;
+    final String? id;
+    final String? type;
     final List<String> placeType;
+    final double? relevance;
     final Properties properties;
-    final String textEs;
+    final String? textEs;
     final String? languageEs;
-    final String placeNameEs;
+    final String? placeNameEs;
     final String? text;
     final String? language;
-    final String placeName;
+    final String? placeName;
     final String? matchingText;
-    final String matchingPlaceName;
+    final String? matchingPlaceName;
     final List<double> center;
     final Geometry geometry;
+    final List<ContextG> context;
 
     Feature({
         required this.id,
         required this.type,
         required this.placeType,
+        required this.relevance,
         required this.properties,
         required this.textEs,
         required this.languageEs,
@@ -67,6 +70,7 @@ class Feature {
         required this.matchingPlaceName,
         required this.center,
         required this.geometry,
+        required this.context,
     });
 
     factory Feature.fromJson(String str) => Feature.fromMap(json.decode(str));
@@ -77,6 +81,7 @@ class Feature {
         id: json["id"],
         type: json["type"],
         placeType: List<String>.from(json["place_type"].map((x) => x)),
+        relevance: json["relevance"],
         properties: Properties.fromMap(json["properties"]),
         textEs: json["text_es"],
         languageEs: json["language_es"],
@@ -88,12 +93,14 @@ class Feature {
         matchingPlaceName: json["matching_place_name"],
         center: List<double>.from(json["center"].map((x) => x.toDouble())),
         geometry: Geometry.fromMap(json["geometry"]),
+        context: List<ContextG>.from(json["context"].map((x) => ContextG.fromMap(x))),
     );
 
     Map<String, dynamic> toMap() => {
         "id": id,
         "type": type,
         "place_type": List<dynamic>.from(placeType.map((x) => x)),
+        "relevance": relevance,
         "properties": properties.toMap(),
         "text_es": textEs,
         "language_es": languageEs,
@@ -105,9 +112,62 @@ class Feature {
         "matching_place_name": matchingPlaceName,
         "center": List<dynamic>.from(center.map((x) => x)),
         "geometry": geometry.toMap(),
+        "context": List<dynamic>.from(context.map((x) => x.toMap())),
     };
+
+  @override
+  String toString() {
+    return 'Feature(id: $id, type: $type, placeType: $placeType, relevance: $relevance, properties: $properties, textEs: $textEs, languageEs: $languageEs, placeNameEs: $placeNameEs, text: $text, language: $language, placeName: $placeName, matchingText: $matchingText, matchingPlaceName: $matchingPlaceName, center: $center, geometry: $geometry, context: $context)';
+  }
 }
 
+class ContextG {
+    final String? id;
+    final String? mapboxId;
+    final String? textEs;
+    final String? text;
+    final String? wikidata;
+    final String? languageEs;
+    final String? language;
+    final String? shortCode;
+
+    ContextG({
+        required this.id,
+        required this.mapboxId,
+        required this.textEs,
+        required this.text,
+        required this.wikidata,
+        required this.languageEs,
+        required this.language,
+        required this.shortCode,
+    });
+
+    factory ContextG.fromJson(String str) => ContextG.fromMap(json.decode(str));
+
+    String toJson() => json.encode(toMap());
+
+    factory ContextG.fromMap(Map<String, dynamic> json) => ContextG(
+        id: json["id"],
+        mapboxId: json["mapbox_id"],
+        textEs: json["text_es"],
+        text: json["text"],
+        wikidata: json["wikidata"],
+        languageEs: json["language_es"],
+        language: json["language"],
+        shortCode: json["short_code"],
+    );
+
+    Map<String, dynamic> toMap() => {
+        "id": id,
+        "mapbox_id": mapboxId,
+        "text_es": textEs,
+        "text": text,
+        "wikidata": wikidata,
+        "language_es": languageEs,
+        "language": language,
+        "short_code": shortCode,
+    };
+}
 
 class Geometry {
     final List<double> coordinates;
@@ -134,11 +194,11 @@ class Geometry {
 }
 
 class Properties {
-    final String address;
-    final String foursquare;
-    final String wikidata;
-    final bool landmark;
-    final String category;
+    final String? address;
+    final String? foursquare;
+    final String? wikidata;
+    final bool? landmark;
+    final String? category;
 
     Properties({
         required this.address,

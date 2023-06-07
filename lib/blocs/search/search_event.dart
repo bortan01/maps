@@ -12,3 +12,16 @@ class OnActivateManualMarkerEvent extends SearchEvent {
 
   const OnActivateManualMarkerEvent({required this.isActive});
 }
+
+class OnNewPlaceFoundEvent extends SearchEvent {
+  final List<Feature> places;
+  const OnNewPlaceFoundEvent({
+    required this.places,
+  });
+}
+
+class AddToHistoryEvent extends SearchEvent {
+  final Feature place;
+
+  const AddToHistoryEvent({required this.place});
+}
