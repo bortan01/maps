@@ -8,23 +8,20 @@ class MapView extends StatelessWidget {
   final LatLng initialLocation;
   final Set<Polyline> polyline;
   final Set<Marker> markers;
-  final double zoom;
 
   const MapView({
     Key? key,
     required this.initialLocation,
     required this.polyline,
     required this.markers,
-    required this.zoom,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    print("******$zoom******");
     final bloc = BlocProvider.of<MapBloc>(context);
     final CameraPosition initialCamaraPosition = CameraPosition(
       target: initialLocation,
-      zoom: zoom,
+      zoom: 15
     );
     final size = MediaQuery.of(context).size;
     return SingleChildScrollView(

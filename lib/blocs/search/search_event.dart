@@ -9,8 +9,12 @@ abstract class SearchEvent extends Equatable {
 
 class OnActivateManualMarkerEvent extends SearchEvent {
   final bool isActive;
+  final bool showMarket;
 
-  const OnActivateManualMarkerEvent({required this.isActive});
+  const OnActivateManualMarkerEvent({
+    required this.isActive,
+    required this.showMarket,
+  });
 }
 
 class OnNewPlaceFoundEvent extends SearchEvent {

@@ -42,50 +42,56 @@ class _ManualMarketBody extends StatelessWidget {
             left: 10,
             child: _BtnBack(),
           ),
-          Center(
-            child: Transform.translate(
-              offset: const Offset(0, -20),
-              child: BounceInDown(
-                from: 100,
-                child: const Icon(
-                  Icons.location_on_rounded,
-                  size: 50,
+          Visibility(
+            visible: blocSearc.state.showMarker,
+            child: Center(
+              child: Transform.translate(
+                offset: const Offset(0, -20),
+                child: BounceInDown(
+                  from: 100,
+                  child: const Icon(
+                    Icons.location_on_rounded,
+                    size: 50,
+                  ),
                 ),
               ),
             ),
           ),
-          Positioned(
-            bottom: 30,
-            left: 40,
-            child: FadeInUp(
-              duration: const Duration(milliseconds: 300),
-              child: MaterialButton(
-                minWidth: size.width - 120,
-                color: Colors.black,
-                elevation: 0,
-                height: 50,
-                shape: const StadiumBorder(),
-                child: const Text(
-                  'Confirmar Destino',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+          Visibility(
+            visible: blocSearc.state.showMarker,
+            child: Positioned(
+              bottom: 30,
+              left: 40,
+              child: FadeInUp(
+                duration: const Duration(milliseconds: 300),
+                child: MaterialButton(
+                  minWidth: size.width - 120,
+                  color: Colors.black,
+                  elevation: 0,
+                  height: 50,
+                  shape: const StadiumBorder(),
+                  child: const Text(
+                    'Confirmar Destino',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
+                  onPressed: () async {
+                    final navigator = Navigator.of(context);
+                    final start = blocLocation.state.lastKnowLocation;
+                    if (start == null) return;
+                    final end = blocMap.mapCenter;
+                    if (end == null) return;
+                    await showLoadingMessage(context);
+
+                    final destination = await blocSearc.getCoorsStartToEnd(start, end);
+                    await blocMap.drawRoutePolilyne(destination);
+                    blocSearc.add(const OnActivateManualMarkerEvent(isActive: false, showMarket: true));
+
+                    navigator.pop();
+                  },
                 ),
-                onPressed: () async {
-                  final navigator = Navigator.of(context);
-                  final start = blocLocation.state.lastKnowLocation;
-                  if (start == null) return;
-                  final end = blocMap.mapCenter;
-                  if (end == null) return;
-                  await showLoadingMessage(context);
-
-                  final destination = await blocSearc.getCoorsStartToEnd(start, end);
-                  await blocMap.drawRoutePolilyne(destination);
-                  blocSearc.add(const OnActivateManualMarkerEvent(isActive: false));
-
-                  navigator.pop();
-                },
               ),
             ),
           )
@@ -111,7 +117,7 @@ class _BtnBack extends StatelessWidget {
           backgroundColor: Colors.black,
           child: IconButton(
             onPressed: () {
-              bloc.add(const OnActivateManualMarkerEvent(isActive: false));
+              bloc.add(const OnActivateManualMarkerEvent(isActive: false, showMarket: false));
             },
             icon: Icon(
               Icons.adaptive.arrow_back,

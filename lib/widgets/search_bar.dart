@@ -43,7 +43,12 @@ class _SearchBarBody extends StatelessWidget {
             if (result == null) return;
             if (result.cancel) return;
 
-            bloc.add(OnActivateManualMarkerEvent(isActive: result.manual));
+            bloc.add(
+              OnActivateManualMarkerEvent(
+                isActive: result.manual,
+                showMarket: result.showMarkerCenter,
+              ),
+            );
             if (result.position == null) return;
             if (blocLocation.state.lastKnowLocation == null) return;
 

@@ -27,9 +27,19 @@ class SearchPlacesDelegate extends SearchDelegate<SearchResult> {
 
   @override
   Widget? buildLeading(BuildContext context) {
+    // CUANDO LE DA PARA ATRAS
     return IconButton(
       onPressed: () {
-        close(context, SearchResult(cancel: true, description: '', manual: true, name: ''));
+        close(
+          context,
+          SearchResult(
+            cancel: true,
+            description: '',
+            manual: true,
+            name: '',
+            showMarkerCenter: false,
+          ),
+        );
       },
       icon: Icon(Icons.adaptive.arrow_back),
     );
@@ -62,7 +72,8 @@ class SearchPlacesDelegate extends SearchDelegate<SearchResult> {
                   context,
                   SearchResult(
                     cancel: false,
-                    manual: false,
+                    manual: true,
+                    showMarkerCenter: false,
                     position: LatLng(
                       place.center[1],
                       place.center[0],
@@ -88,9 +99,18 @@ class SearchPlacesDelegate extends SearchDelegate<SearchResult> {
     final history = bloc.state.history;
     return ListView(
       children: [
-           ListTile(
+        ListTile(
           onTap: () {
-            close(context, SearchResult(cancel: false, manual: true, description: '', name: ''));
+            close(
+              context,
+              SearchResult(
+                cancel: false,
+                manual: true,
+                showMarkerCenter: true,
+                description: '',
+                name: '',
+              ),
+            );
           },
           title: const Text(
             'Colocar la ubicación manualmente',
@@ -110,8 +130,9 @@ class SearchPlacesDelegate extends SearchDelegate<SearchResult> {
               close(
                 context,
                 SearchResult(
+                  showMarkerCenter: false,
                   cancel: false,
-                  manual: false,
+                  manual: true,
                   position: LatLng(
                     e.center[1],
                     e.center[0],
@@ -133,7 +154,6 @@ class SearchPlacesDelegate extends SearchDelegate<SearchResult> {
             ),
           ),
         ),
-     
       ],
     );
   }

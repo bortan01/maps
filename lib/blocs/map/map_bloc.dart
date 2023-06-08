@@ -86,13 +86,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
   _onDisplayPolilyne(DisplayPoliyneEvent event, Emitter<MapState> emit) async {
     double currentZoom = await _mapController?.getZoomLevel() ?? 15;
-    currentZoom = currentZoom - 5;
-    emit(state.copyWith(
-      polylines: event.polilynes,
-      markers: event.markers,
-      isFollowingUser: false,
-      zoom: currentZoom
-    ));
+    emit(state.copyWith(polylines: event.polilynes, markers: event.markers, isFollowingUser: false, zoom: currentZoom));
   }
 
   Future<void> drawRoutePolilyne(RouteDestination destination) async {
@@ -140,8 +134,6 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   }
 
   Future<void> centrarPolyline(RouteDestination destination) async {
-    // _polylines = {};
-    // polylineCoordinates = [];
     double latSouthWest = 0;
     double lngSouthWest = 0;
     double latNorthEast = 0;
@@ -168,19 +160,19 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
     LatLngBounds bound = LatLngBounds(southwest: southWestLocation, northeast: northEast);
 
-    CameraUpdate u2 = CameraUpdate.newLatLngBounds(bound, 50);
+    CameraUpdate u2 = CameraUpdate.newLatLngBounds(bound, 70);
     await _mapController?.animateCamera(u2);
-    await checkCenter(u2, _mapController!, destination);
+    // await checkCenter(u2, _mapController!);
   }
 
-  Future<void> checkCenter(CameraUpdate u, GoogleMapController c, RouteDestination solicitud) async {
+  Future<void> checkCenter(CameraUpdate u, GoogleMapController c) async {
     c.animateCamera(u);
     _mapController?.animateCamera(u);
     LatLngBounds l1 = await c.getVisibleRegion();
     LatLngBounds l2 = await c.getVisibleRegion();
 
     if (l1.southwest.latitude == -90 || l2.southwest.latitude == -90) {
-      await checkCenter(u, c, solicitud);
+      await checkCenter(u, c);
     }
   }
 
