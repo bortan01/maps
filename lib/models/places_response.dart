@@ -40,7 +40,7 @@ class Feature {
     final String? id;
     final String? type;
     final List<String> placeType;
-    final double? relevance;
+    final num? relevance;
     final Properties properties;
     final String? textEs;
     final String? languageEs;

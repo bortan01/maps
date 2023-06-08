@@ -56,6 +56,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   void _onStart(OnStarFollowingUser event, Emitter<MapState> emit) {
     emit(state.copyWith(isFollowingUser: true));
     if (locationBloc.state.lastKnowLocation == null) return;
+    print("onstart");
     moveCamera(locationBloc.state.lastKnowLocation!);
   }
 
@@ -83,7 +84,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   }
 
   void _onDisplayPolilyne(DisplayPoliyneEvent event, Emitter<MapState> emit) {
-    emit(state.copyWith(polylines: event.polilynes));
+    emit(state.copyWith(polylines: event.polilynes, markers: event.markers, isFollowingUser: false));
   }
 
   Future<void> drawRoutePolilyne(RouteDestination destination) async {
@@ -95,10 +96,67 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       endCap: Cap.roundCap,
       points: destination.points,
     );
+
+    final startMarker = Marker(markerId: const MarkerId('start'), position: destination.points.first);
+    final endMarker = Marker(markerId: const MarkerId('end'), position: destination.points.last);
+
+    final currentMarkers = Map<String, Marker>.from(state.markers);
+    currentMarkers['start'] = startMarker;
+    currentMarkers['end'] = endMarker;
+
     final currentPolilyne = Map<String, Polyline>.from(state.polylines);
     currentPolilyne['route'] = myRoute;
+    centrarPolyline(destination);
+    state.copyWith(isFollowingUser: false);
+    add(DisplayPoliyneEvent(
+      polilynes: currentPolilyne,
+      markers: currentMarkers,
+    ));
+  }
 
-    add(DisplayPoliyneEvent(polilynes: currentPolilyne));
+  Future<void> centrarPolyline(RouteDestination destination) async {
+    // _polylines = {};
+    // polylineCoordinates = [];
+    double latSouthWest = 0;
+    double lngSouthWest = 0;
+    double latNorthEast = 0;
+    double lngNorthEast = 0;
+
+    if (destination.points.first.latitude < destination.points.last.latitude) {
+      latSouthWest = destination.points.first.latitude;
+      latNorthEast = destination.points.last.latitude;
+    } else {
+      latSouthWest = destination.points.last.latitude;
+      latNorthEast = destination.points.first.latitude;
+    }
+
+    if (destination.points.first.longitude < destination.points.last.longitude) {
+      lngSouthWest = destination.points.first.longitude;
+      lngNorthEast = destination.points.last.longitude;
+    } else {
+      lngSouthWest = destination.points.last.longitude;
+      lngNorthEast = destination.points.first.longitude;
+    }
+
+    LatLng southWestLocation = LatLng(latSouthWest, lngSouthWest);
+    LatLng northEast = LatLng(latNorthEast, lngNorthEast);
+
+    LatLngBounds bound = LatLngBounds(southwest: southWestLocation, northeast: northEast);
+
+    CameraUpdate u2 = CameraUpdate.newLatLngBounds(bound, 50);
+    await _mapController?.animateCamera(u2);
+    await checkCenter(u2, _mapController!, destination);
+  }
+
+  Future<void> checkCenter(CameraUpdate u, GoogleMapController c, RouteDestination solicitud) async {
+    c.animateCamera(u);
+    _mapController?.animateCamera(u);
+    LatLngBounds l1 = await c.getVisibleRegion();
+    LatLngBounds l2 = await c.getVisibleRegion();
+
+    if (l1.southwest.latitude == -90 || l2.southwest.latitude == -90) {
+      await checkCenter(u, c, solicitud);
+    }
   }
 
   @override

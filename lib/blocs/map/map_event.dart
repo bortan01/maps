@@ -27,7 +27,9 @@ class OnTogleUserRoute extends MapEvent {}
 
 class DisplayPoliyneEvent extends MapEvent {
   final Map<String, Polyline> polilynes;
+  final Map<String, Marker> markers;
   const DisplayPoliyneEvent({
     required this.polilynes,
+    required this.markers,
   });
 }
