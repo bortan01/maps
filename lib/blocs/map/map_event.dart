@@ -33,3 +33,10 @@ class DisplayPoliyneEvent extends MapEvent {
     required this.markers,
   });
 }
+
+class UpdateZoomEvent extends MapEvent{
+  final double zoom;
+  const UpdateZoomEvent({
+    required this.zoom,
+  });
+}

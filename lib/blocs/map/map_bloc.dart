@@ -28,6 +28,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     on<UpdateUserPolylineEvent>(_onUpdate);
     on<OnTogleUserRoute>(_onTogle);
     on<DisplayPoliyneEvent>(_onDisplayPolilyne);
+    on<UpdateZoomEvent>(_onUpdateZoom);
 
     init();
   }
@@ -83,8 +84,15 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     emit(state.copyWith(showMyRoute: !state.showMyRoute));
   }
 
-  void _onDisplayPolilyne(DisplayPoliyneEvent event, Emitter<MapState> emit) {
-    emit(state.copyWith(polylines: event.polilynes, markers: event.markers, isFollowingUser: false));
+  _onDisplayPolilyne(DisplayPoliyneEvent event, Emitter<MapState> emit) async {
+    double currentZoom = await _mapController?.getZoomLevel() ?? 15;
+    currentZoom = currentZoom - 5;
+    emit(state.copyWith(
+      polylines: event.polilynes,
+      markers: event.markers,
+      isFollowingUser: false,
+      zoom: currentZoom
+    ));
   }
 
   Future<void> drawRoutePolilyne(RouteDestination destination) async {
@@ -97,8 +105,22 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       points: destination.points,
     );
 
-    final startMarker = Marker(markerId: const MarkerId('start'), position: destination.points.first);
-    final endMarker = Marker(markerId: const MarkerId('end'), position: destination.points.last);
+    final startMarker = Marker(
+      markerId: const MarkerId('start'),
+      position: destination.points.first,
+      infoWindow: const InfoWindow(
+        title: 'Inicio',
+        snippet: 'Este es el punto de inicio de mi ruta',
+      ),
+    );
+    final endMarker = Marker(
+      markerId: const MarkerId('end'),
+      position: destination.points.last,
+      infoWindow: const InfoWindow(
+        title: 'Fin',
+        snippet: 'Este es el punto final de mi ruta',
+      ),
+    );
 
     final currentMarkers = Map<String, Marker>.from(state.markers);
     currentMarkers['start'] = startMarker;
@@ -106,12 +128,15 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
     final currentPolilyne = Map<String, Polyline>.from(state.polylines);
     currentPolilyne['route'] = myRoute;
-    centrarPolyline(destination);
+    await centrarPolyline(destination);
     state.copyWith(isFollowingUser: false);
+
     add(DisplayPoliyneEvent(
       polilynes: currentPolilyne,
       markers: currentMarkers,
     ));
+    await Future.delayed(const Duration(milliseconds: 300));
+    _mapController?.showMarkerInfoWindow(const MarkerId('start'));
   }
 
   Future<void> centrarPolyline(RouteDestination destination) async {
@@ -163,5 +188,9 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   Future<void> close() {
     _locationStateSubscription?.cancel();
     return super.close();
+  }
+
+  void _onUpdateZoom(UpdateZoomEvent event, Emitter<MapState> emit) {
+    emit(state.copyWith(zoom: event.zoom));
   }
 }

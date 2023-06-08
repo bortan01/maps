@@ -6,11 +6,13 @@ class MapState extends Equatable {
   final bool showMyRoute;
   final Map<String, Polyline> polylines;
   final Map<String, Marker> markers;
+  final double zoom;
 
   const MapState({
     this.isMapInitialized = false,
     this.isFollowingUser = true,
     this.showMyRoute = true,
+    this.zoom = 15.0,
     Map<String, Polyline>? polylines,
     Map<String, Marker>? markers,
   })  : polylines = polylines ?? const {},
@@ -35,6 +37,7 @@ class MapState extends Equatable {
       showMyRoute,
       polylines,
       markers,
+      zoom,
     ];
   }
 
@@ -44,6 +47,7 @@ class MapState extends Equatable {
     bool? showMyRoute,
     Map<String, Polyline>? polylines,
     Map<String, Marker>? markers,
+    double? zoom,
   }) {
     return MapState(
       isMapInitialized: isMapInitialized ?? this.isMapInitialized,
@@ -51,6 +55,7 @@ class MapState extends Equatable {
       showMyRoute: showMyRoute ?? this.showMyRoute,
       polylines: polylines ?? this.polylines,
       markers: markers ?? this.markers,
+      zoom: zoom ?? this.zoom,
     );
   }
 }

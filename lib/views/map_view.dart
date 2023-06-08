@@ -7,21 +7,24 @@ import 'package:mapas/blocs/map/map_bloc.dart';
 class MapView extends StatelessWidget {
   final LatLng initialLocation;
   final Set<Polyline> polyline;
-    final Set<Marker> markers;
+  final Set<Marker> markers;
+  final double zoom;
 
   const MapView({
     Key? key,
     required this.initialLocation,
     required this.polyline,
     required this.markers,
+    required this.zoom,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    print("******$zoom******");
     final bloc = BlocProvider.of<MapBloc>(context);
     final CameraPosition initialCamaraPosition = CameraPosition(
       target: initialLocation,
-      zoom: 15,
+      zoom: zoom,
     );
     final size = MediaQuery.of(context).size;
     return SingleChildScrollView(
@@ -38,7 +41,7 @@ class MapView extends StatelessWidget {
             zoomControlsEnabled: false,
             myLocationButtonEnabled: false,
             polylines: polyline,
-            markers: markers ,
+            markers: markers,
             onCameraMove: (position) {
               bloc.mapCenter = position.target;
             },
