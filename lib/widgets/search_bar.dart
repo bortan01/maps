@@ -15,7 +15,7 @@ class SearchBar extends StatelessWidget {
     return SafeArea(
       child: BlocBuilder<SearchBloc, SearchState>(
         builder: (context, state) {
-          return state.displayManualMarker ? const SizedBox() : const _SearchBarBody();
+          return state.showButtonBack ? const SizedBox() : const _SearchBarBody();
         },
       ),
     );
@@ -44,9 +44,11 @@ class _SearchBarBody extends StatelessWidget {
             if (result.cancel) return;
 
             bloc.add(
-              OnActivateManualMarkerEvent(
-                isActive: result.manual,
-                showMarket: result.showMarkerCenter,
+              OnUpdateMarkers(
+                showMarker: result.showMarke,
+                showButtonBack: result.showButtonBack,
+                showButtonDestination: result.showButtonDestination,
+                isActive: true,
               ),
             );
             if (result.position == null) return;

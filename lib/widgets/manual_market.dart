@@ -14,17 +14,26 @@ class ManualMarket extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<SearchBloc, SearchState>(
       builder: (context, state) {
-        if (state.displayManualMarker) {
-          return const _ManualMarketBody();
-        }
-        return const SizedBox();
+        return _ManualMarketBody(
+          showButtonBack: state.showButtonBack,
+          showButtonDestination: state.showButtonDestination,
+          showMarker: state.showMarker,
+        );
       },
     );
   }
 }
 
 class _ManualMarketBody extends StatelessWidget {
-  const _ManualMarketBody();
+  final bool showMarker;
+  final bool showButtonBack;
+  final bool showButtonDestination;
+
+  const _ManualMarketBody({
+    required this.showMarker,
+    required this.showButtonBack,
+    required this.showButtonDestination,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,13 +46,16 @@ class _ManualMarketBody extends StatelessWidget {
       width: size.width,
       child: Stack(
         children: [
-          const Positioned(
-            top: 10,
-            left: 10,
-            child: _BtnBack(),
+          Visibility(
+            visible: showButtonBack,
+            child: const Positioned(
+              top: 10,
+              left: 10,
+              child: _BtnBack(),
+            ),
           ),
           Visibility(
-            visible: blocSearc.state.showMarker,
+            visible: showMarker,
             child: Center(
               child: Transform.translate(
                 offset: const Offset(0, -20),
@@ -58,7 +70,7 @@ class _ManualMarketBody extends StatelessWidget {
             ),
           ),
           Visibility(
-            visible: blocSearc.state.showMarker,
+            visible: showButtonDestination,
             child: Positioned(
               bottom: 30,
               left: 40,
@@ -87,7 +99,14 @@ class _ManualMarketBody extends StatelessWidget {
 
                     final destination = await blocSearc.getCoorsStartToEnd(start, end);
                     await blocMap.drawRoutePolilyne(destination);
-                    blocSearc.add(const OnActivateManualMarkerEvent(isActive: false, showMarket: true));
+                    blocSearc.add(
+                      const OnUpdateMarkers(
+                        isActive: false,
+                        showMarker: false,
+                        showButtonBack: true,
+                        showButtonDestination: false,
+                      ),
+                    );
 
                     navigator.pop();
                   },
@@ -117,7 +136,14 @@ class _BtnBack extends StatelessWidget {
           backgroundColor: Colors.black,
           child: IconButton(
             onPressed: () {
-              bloc.add(const OnActivateManualMarkerEvent(isActive: false, showMarket: false));
+              bloc.add(
+                const OnUpdateMarkers(
+                  isActive: false,
+                  showButtonBack: false,
+                  showButtonDestination: false,
+                  showMarker: false,
+                ),
+              );
             },
             icon: Icon(
               Icons.adaptive.arrow_back,

@@ -17,14 +17,18 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   TraficServices trafictServices = TraficServices();
   SearchBloc() : super(const SearchState()) {
     on<SearchEvent>(_init);
-    on<OnActivateManualMarkerEvent>(_onActivateManual);
+    on<OnUpdateMarkers>(_onUpdateMarkers);
     on<OnNewPlaceFoundEvent>(_onNewPlaceFound);
     on<AddToHistoryEvent>(_addHistory);
   }
   void _init(SearchEvent event, Emitter<SearchState> emit) {}
 
-  void _onActivateManual(OnActivateManualMarkerEvent event, Emitter<SearchState> emit) {
-    emit(state.copyWith(displayManualMarker: event.isActive));
+  void _onUpdateMarkers(OnUpdateMarkers event, Emitter<SearchState> emit) {
+    emit(state.copyWith(
+      showMarker: event.showMarker,
+      showButtonBack: event.showButtonBack,
+      showButtonDestination: event.showButtonDestination
+    ));
   }
 
   void _onNewPlaceFound(OnNewPlaceFoundEvent event, Emitter<SearchState> emit) {

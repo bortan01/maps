@@ -21,7 +21,7 @@ class BtnFollowUser extends StatelessWidget {
           icon: BlocBuilder<MapBloc, MapState>(
             builder: (context, state) {
               return Icon(
-                state.isFollowingUser ? Icons.directions_run_rounded : Icons.hail_rounded,
+                state.isFollowingUser ? Icons.hail_rounded : Icons.directions_run_rounded,
                 color: Colors.white,
               );
             },

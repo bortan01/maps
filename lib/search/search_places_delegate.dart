@@ -14,6 +14,7 @@ class SearchPlacesDelegate extends SearchDelegate<SearchResult> {
         );
 
   @override
+  // BOTON DE CANCELAR
   List<Widget>? buildActions(BuildContext context) {
     return [
       IconButton(
@@ -26,8 +27,8 @@ class SearchPlacesDelegate extends SearchDelegate<SearchResult> {
   }
 
   @override
+  // CUANDO LE DA PARA ATRAS
   Widget? buildLeading(BuildContext context) {
-    // CUANDO LE DA PARA ATRAS
     return IconButton(
       onPressed: () {
         close(
@@ -37,7 +38,9 @@ class SearchPlacesDelegate extends SearchDelegate<SearchResult> {
             description: '',
             manual: true,
             name: '',
-            showMarkerCenter: false,
+            showMarke: false,
+            showButtonBack: false,
+            showButtonDestination: false,
           ),
         );
       },
@@ -46,6 +49,7 @@ class SearchPlacesDelegate extends SearchDelegate<SearchResult> {
   }
 
   @override
+  // CUANDO TRAEMOS NUEVA DATA
   Widget buildResults(BuildContext context) {
     final bloc = BlocProvider.of<SearchBloc>(context);
     final locationBloc = BlocProvider.of<LocationBloc>(context);
@@ -73,7 +77,9 @@ class SearchPlacesDelegate extends SearchDelegate<SearchResult> {
                   SearchResult(
                     cancel: false,
                     manual: true,
-                    showMarkerCenter: false,
+                    showMarke: false,
+                    showButtonBack: true,
+                    showButtonDestination: false,
                     position: LatLng(
                       place.center[1],
                       place.center[0],
@@ -94,6 +100,7 @@ class SearchPlacesDelegate extends SearchDelegate<SearchResult> {
   }
 
   @override
+  // ESTAS SON LAS SUGERENCIAS INICIALES
   Widget buildSuggestions(BuildContext context) {
     final bloc = BlocProvider.of<SearchBloc>(context);
     final history = bloc.state.history;
@@ -106,7 +113,9 @@ class SearchPlacesDelegate extends SearchDelegate<SearchResult> {
               SearchResult(
                 cancel: false,
                 manual: true,
-                showMarkerCenter: true,
+                showMarke: true,
+                showButtonBack: true,
+                showButtonDestination: true,
                 description: '',
                 name: '',
               ),
@@ -130,9 +139,11 @@ class SearchPlacesDelegate extends SearchDelegate<SearchResult> {
               close(
                 context,
                 SearchResult(
-                  showMarkerCenter: false,
+                  showMarke: false,
+                  manual: false,
+                  showButtonBack: true,
                   cancel: false,
-                  manual: true,
+                  showButtonDestination: false,
                   position: LatLng(
                     e.center[1],
                     e.center[0],
