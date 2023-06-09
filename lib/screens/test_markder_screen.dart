@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../markers/star_marker_painter.dart';
+import '../markers/end_marker_painter.dart';
 
 class TestMarkerScreen extends StatelessWidget {
   const TestMarkerScreen({super.key});
@@ -14,7 +14,8 @@ class TestMarkerScreen extends StatelessWidget {
           height: 150,
           width: 350,
           child: CustomPaint(
-            painter: StartMakerPainter(),
+            painter: EndMarkerPainter(
+                destination: 'Consectetur in voluptate irure voluptate enim dolore id.', kilometros: 86),
           ),
         ),
       ),

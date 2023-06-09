@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mapas/models/route_destination.dart';
 
 import '../../helpers/custom_image_marker.dart';
+import '../../helpers/widgets_to_image.dart';
 import '../../themes/mapa_style.dart';
 import '../location/location_bloc.dart';
 
@@ -104,30 +105,40 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     kms = (kms * 100).roundToDouble();
     kms / 100;
 
-    double tripDuration = (destination.duration / 60).roundToDouble();
+    int tripDuration = (destination.duration / 60).roundToDouble().toInt();
 
-    final starMarketIcon = await getAssetImageMarket();
-    final endMarkerIcon = await getNetworkImageMarker();
+    // final starMarketIcon = await getAssetImageMarket();
+    // final endMarkerIcon = await getNetworkImageMarker();
+
+    final starMarketIcon = await getStartCusmtomMarker(
+      destination: 'Mi ubicacion',
+      minutes: tripDuration,
+    );
+    final endMarkerIcon = await getEndCusmtomMarker(
+      destination: destination.endPlaceInfo.text ?? '',
+      kilometros: kms.toInt(),
+    );
 
     final startMarker = Marker(
-      markerId: const MarkerId('start'),
-      position: destination.points.first,
-      icon: starMarketIcon,
-      infoWindow: InfoWindow(
-        title: 'Inicio',
-        snippet: 'Distancia: $kms km, duracion $tripDuration h',
-      ),
-    );
+        markerId: const MarkerId('start'),
+        position: destination.points.first,
+        icon: starMarketIcon,
+        anchor: const Offset(0.060, 0.87)
+        // infoWindow: InfoWindow(
+        //   title: 'Inicio',
+        //   snippet: 'Distancia: $kms km, duracion $tripDuration h',
+        // ),
+        );
 
     final endMarker = Marker(
       markerId: const MarkerId('end'),
       position: destination.points.last,
       icon: endMarkerIcon,
       // anchor: Offset(dx, dy),
-      infoWindow: InfoWindow(
-        title: destination.endPlaceInfo.text,
-        snippet: destination.endPlaceInfo.placeName,
-      ),
+      // infoWindow: InfoWindow(
+      //   title: destination.endPlaceInfo.text,
+      //   snippet: destination.endPlaceInfo.placeName,
+      // ),
     );
 
     final currentMarkers = Map<String, Marker>.from(state.markers);
@@ -144,7 +155,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       markers: currentMarkers,
     ));
     await Future.delayed(const Duration(milliseconds: 300));
-    _mapController?.showMarkerInfoWindow(const MarkerId('start'));
+    // _mapController?.showMarkerInfoWindow(const MarkerId('start'));
   }
 
   Future<void> centrarPolyline(RouteDestination destination) async {

@@ -21,15 +21,11 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => LocationBloc()),
         BlocProvider(create: (context) => MapBloc(locationBloc: BlocProvider.of<LocationBloc>(context))),
         BlocProvider(create: (_) => SearchBloc()),
-
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Material App',
-        home: TestMarkerScreen(
-          
-
-        ),
+        home: LoadingScreen(),
       ),
     );
   }
