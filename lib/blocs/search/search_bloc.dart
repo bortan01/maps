@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -25,10 +24,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   void _onUpdateMarkers(OnUpdateMarkers event, Emitter<SearchState> emit) {
     emit(state.copyWith(
-      showMarker: event.showMarker,
-      showButtonBack: event.showButtonBack,
-      showButtonDestination: event.showButtonDestination
-    ));
+        showMarker: event.showMarker,
+        showButtonBack: event.showButtonBack,
+        showButtonDestination: event.showButtonDestination));
   }
 
   void _onNewPlaceFound(OnNewPlaceFoundEvent event, Emitter<SearchState> emit) {
@@ -43,9 +41,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   Future<RouteDestination> getCoorsStartToEnd(LatLng start, LatLng end) async {
     final response = await trafictServices.getCoordStartToEnd(start, end);
+    final endPlaceInfo = await trafictServices.getInformationByCoords(end);
     final points = decodePolyline(response.routes.first.geometry, accuracyExponent: 6)
         .map(
-          (coords) => LatLng(coords[0].toDouble(), coords[1].toDouble()),
+          (coords) => LatLng(
+            coords[0].toDouble(),
+            coords[1].toDouble(),
+          ),
         )
         .toList();
 
@@ -53,6 +55,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       points: points,
       duration: response.routes.first.distance,
       distance: response.routes.first.duration,
+      endPlaceInfo: endPlaceInfo
     );
   }
 

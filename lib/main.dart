@@ -6,6 +6,8 @@ import 'package:mapas/blocs/map/map_bloc.dart';
 import 'package:mapas/blocs/search/search_bloc.dart';
 import 'package:mapas/screens/loading_screen.dart';
 
+import 'screens/test_markder_screen.dart';
+
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
@@ -24,7 +26,10 @@ class MyApp extends StatelessWidget {
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Material App',
-        home: LoadingScreen(),
+        home: TestMarkerScreen(
+          
+
+        ),
       ),
     );
   }

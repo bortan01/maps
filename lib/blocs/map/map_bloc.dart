@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mapas/models/route_destination.dart';
 
+import '../../helpers/custom_image_marker.dart';
 import '../../themes/mapa_style.dart';
 import '../location/location_bloc.dart';
 
@@ -99,20 +100,33 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       points: destination.points,
     );
 
+    double kms = destination.distance / 1000;
+    kms = (kms * 100).roundToDouble();
+    kms / 100;
+
+    double tripDuration = (destination.duration / 60).roundToDouble();
+
+    final starMarketIcon = await getAssetImageMarket();
+    final endMarkerIcon = await getNetworkImageMarker();
+
     final startMarker = Marker(
       markerId: const MarkerId('start'),
       position: destination.points.first,
-      infoWindow: const InfoWindow(
+      icon: starMarketIcon,
+      infoWindow: InfoWindow(
         title: 'Inicio',
-        snippet: 'Este es el punto de inicio de mi ruta',
+        snippet: 'Distancia: $kms km, duracion $tripDuration h',
       ),
     );
+
     final endMarker = Marker(
       markerId: const MarkerId('end'),
       position: destination.points.last,
-      infoWindow: const InfoWindow(
-        title: 'Fin',
-        snippet: 'Este es el punto final de mi ruta',
+      icon: endMarkerIcon,
+      // anchor: Offset(dx, dy),
+      infoWindow: InfoWindow(
+        title: destination.endPlaceInfo.text,
+        snippet: destination.endPlaceInfo.placeName,
       ),
     );
 
@@ -160,7 +174,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
     LatLngBounds bound = LatLngBounds(southwest: southWestLocation, northeast: northEast);
 
-    CameraUpdate u2 = CameraUpdate.newLatLngBounds(bound, 70);
+    CameraUpdate u2 = CameraUpdate.newLatLngBounds(bound, 90);
     await _mapController?.animateCamera(u2);
     // await checkCenter(u2, _mapController!);
   }
