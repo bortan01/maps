@@ -95,7 +95,7 @@ class _ManualMarketBody extends StatelessWidget {
                     if (start == null) return;
                     final end = blocMap.mapCenter;
                     if (end == null) return;
-                    await showLoadingMessage(context);
+                    await showLoadingMessage(context, mensaje: "Calcualando Ruta");
 
                     final destination = await blocSearc.getCoorsStartToEnd(start, end);
                     await blocMap.drawRoutePolilyne(destination);

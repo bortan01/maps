@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mapas/models/route_destination.dart';
 
-import '../../helpers/custom_image_marker.dart';
 import '../../helpers/widgets_to_image.dart';
 import '../../themes/mapa_style.dart';
 import '../location/location_bloc.dart';
